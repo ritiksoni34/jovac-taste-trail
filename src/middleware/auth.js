@@ -19,7 +19,7 @@ export async function protect(req, res, next) {
     if (user.status === "pending" && user.role === "staff") {
       return res.status(403).json({ message: "Staff account is awaiting administrator approval." });
     }
-
+    
     req.user = user;
     next();
   } catch {
