@@ -4,7 +4,7 @@ import User from "../models/User.js";
 export async function protect(req, res, next) {
   try {
     const token = req.headers.authorization?.startsWith("Bearer ")
-      ? req.headers.authorization.slice(7)
+      ? req.headers.authorization.slice(7) // Remove "Bearer " prefix
       : null;
     if (!token) return res.status(401).json({ message: "Please sign in first." });
 

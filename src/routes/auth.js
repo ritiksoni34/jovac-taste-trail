@@ -1,11 +1,12 @@
-import { Router } from "express";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import { z } from "zod";
+import { Router } from "express"; 
+import bcrypt from "bcryptjs"; 
+import jwt from "jsonwebtoken"; 
+import { z } from "zod"; // For input validation
 import User from "../models/User.js";
 import { protect, adminOnly } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { logAudit } from "../utils/auditLogger.js";
+
 
 const router = Router();
 
@@ -20,7 +21,7 @@ function tokenFor(user) {
   return jwt.sign(
     { sub: user._id.toString(), role: user.role },
     process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRES_IN || "7d" }
+    { expiresIn: process.env.JWT_EXPIRES_IN || "7d" } // Default to 7 days if not set
   );
 }
 

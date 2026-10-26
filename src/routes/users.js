@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { z } from "zod";
+import { z } from "zod"; 
 import User from "../models/User.js";
 import { protect, adminOnly } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
