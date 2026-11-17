@@ -1,136 +1,134 @@
-import { useContext, useState } from "react";
-import { AppContext } from "../context/AppContext";
-import { Link } from "react-router-dom";
-import {ShoppingCart, UserCircle,CalendarDays, Package, LogOut} from "lucide-react";
 
-const 
-Navbar = () => {
-    const {navigate,user,setUser} = useContext(AppContext);
-    const [isMenuOpen,setIsMenuOpen]=useState(false);
-    const [isProfileOpen,setIsProfileOpen]=useState(false);
-  return ( 
-  <nav className="bg-cyan-50 shadow-md sticky top-0 z-50 py-3">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16">
-                {/* left - logo k liye */}
-                <div className="flex items-center ">
-                    <Link to="/" className="text-2xl font-bold text-blue-600">
-                    <img src="./logo.png" alt="" className="w-32" />
-                    </Link>
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+    ShoppingCart,
+    UserCircle,
+    CalendarDays,
+    Package,
+    LogOut,
+    Menu,
+    X
+} from "lucide-react";
+
+import { useAppContext } from "../context/AppContext";
+
+const Navbar = () => {
+    const navigate = useNavigate();
+    const { user, setUser } = useAppContext();
+
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+    const handleLogout = () => {
+        setUser(null);
+        setIsProfileOpen(false);
+        setIsMenuOpen(false);
+        navigate("/");
+    };
+
+    return (
+        <nav className="site-navbar">
+            <div className="navbar-container">
+
+                {/* Logo */}
+                <Link to="/" className="navbar-logo">
+                    <span>Taste</span>Trail.
+                </Link>
+
+                {/* Desktop Navigation */}
+                <div className="navbar-links">
+                    <Link to="/">Home</Link>
+                    <Link to="/menu">Menu</Link>
+                    <Link to="/book-table">Book a Table</Link>
+                    <Link to="/my-orders">My Orders</Link>
                 </div>
-                {/* centre -Menu k liye h */}
-                <div className="hidden md:flex items-center space-x-8">
-                    <Link to={'/'} className="text-grey-700 hover:text-blue-600 transmition-colors font-medium">Home</Link>
-                    <Link to={'/Menu'} className="text-grey-700 hover:text-blue-600 transmition-colors font-medium">Menu</Link>
-                    <Link to={'/Contact'} className="text-grey-700 hover:text-blue-600 transmition-colors font-medium">Contact</Link>
-                </div>
-                {/* right - cart & button k liye*/}
-                <div className="flex items-center space-x-4">
-                    <button onClick={()=> navigate("/Cart")} className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                        <ShoppingCart size={22} className="text-grey-700"/>
-                        <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-x rounded-full w-5 h-5 felx items-center justify-center font-medium">3</span>
+
+                {/* Right Side */}
+                <div className="navbar-actions">
+
+                    <button
+                        className="navbar-cart"
+                        onClick={() => navigate("/cart")}
+                        aria-label="Open cart"
+                    >
+                        <ShoppingCart size={21} />
                     </button>
-                    <div className="hidden md:block">
-                        {
-                            user?(
-                                <div className="relative">
-                                    <button className="p-2 hover:bg-gray-100 rounded-lg transition-colours"
-                                    onMouseEnter={()=> setIsProfileOpen(true)}
-                                    onMouseLeave={()=> setIsProfileOpen(false)}
-                                    >
-                                    <UserCircle size={30} className="text-grey-700"/>
-                                    </button>
 
-                                    {isProfileOpen&&(
-                                        <div
-                                    onMouseEnter={()=> setIsProfileOpen(true)}
-                                    onMouseLeave={()=> setIsProfileOpen(false)}
-                                    className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg p-2 border border-gray-100"
-                                        >
-                                            <Link to={"/Mybookings"} className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transitions-colors">
-                                            <CalendarDays size={18} className="mr-3"/>
-                                            My Bookings
-                                            </Link>
-                                            <Link to={"/MyOrders"} className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transitions-colors">
-                                            <Package size={18} className="mr-3"/>
-                                            My Orders
-                                            </Link>
-                                            <button onClick={() => {
-                                                    setUser(false);
-                                                    setIsProfileOpen(false);
-                                                }}
-                                                className="flex items-center w-full px-4 py-2 text-red-600 hover:bg-red-50"
-                                            >
-                                                <LogOut size={18} className="mr-3" />
-                                                Logout
-                                            </button>
-                                        </div>
-                                    )}
+                    {user ? (
+                        <div className="profile-wrapper">
+                            <button
+                                className="profile-button"
+                                onClick={() => setIsProfileOpen(!isProfileOpen)}
+                            >
+                                <UserCircle size={25} />
+                            </button>
+
+                            {isProfileOpen && (
+                                <div className="profile-dropdown">
+                                    <Link
+                                        to="/my-orders"
+                                        onClick={() => setIsProfileOpen(false)}
+                                    >
+                                        <Package size={17} />
+                                        My Orders
+                                    </Link>
+
+                                    <Link
+                                        to="/book-table"
+                                        onClick={() => setIsProfileOpen(false)}
+                                    >
+                                        <CalendarDays size={17} />
+                                        Book a Table
+                                    </Link>
+
+                                    <button onClick={handleLogout}>
+                                        <LogOut size={17} />
+                                        Logout
+                                    </button>
                                 </div>
-                            ):(
-                                <button onClick={() => navigate("/Login")}
-                                className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-700 transition-colors font-medium cursor-pointer"
-                                >Login</button>
-                            )
-                        }
-                    </div>
+                            )}
+                        </div>
+                    ) : (
+                        <button
+                            className="navbar-login"
+                            onClick={() => navigate("/login")}
+                        >
+                            Login
+                        </button>
+                    )}
+
+                    {/* Mobile Menu Button */}
+                    <button
+                        className="mobile-menu-button"
+                        onClick={() => setIsMenuOpen(!isMenuOpen)}
+                        aria-label="Toggle navigation"
+                    >
+                        {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                    </button>
                 </div>
             </div>
 
-            {isMenuOpen&&(
-                <div className="md:hidden py-4 border-t border-gray-200">
-                    <div className="felx flex-col space-3"></div>
-                         <Link to={'/'} className="text-grey-700 hover:text-blue-600 transmition-colors font-medium">Home</Link>
-                        <Link to={'/Menu'} className="text-grey-700 hover:text-blue-600 transmition-colors font-medium">Menu</Link>
-                        <Link to={'/Contact'} className="text-grey-700 hover:text-blue-600 transmition-colors font-medium">Contact</Link>
+            {/* Mobile Navigation */}
+            {isMenuOpen && (
+                <div className="mobile-navigation">
+                    <Link to="/" onClick={() => setIsMenuOpen(false)}>Home</Link>
+                    <Link to="/menu" onClick={() => setIsMenuOpen(false)}>Menu</Link>
+                    <Link to="/book-table" onClick={() => setIsMenuOpen(false)}>Book a Table</Link>
+                    <Link to="/my-orders" onClick={() => setIsMenuOpen(false)}>My Orders</Link>
 
-                        {
-                            user?(
-                                <div className="relative">
-                                    <button className="p-2 hover:bg-gray-100 rounded-lg transition-colours"
-                                    onMouseEnter={()=> setIsProfileOpen(true)}
-                                    onMouseLeave={()=> setIsProfileOpen(false)}
-                                    >
-                                    <UserCircle size={30} className="text-grey-700"/>
-                                    </button>
+                    {!user && (
+                        <Link to="/login" onClick={() => setIsMenuOpen(false)}>
+                            Login
+                        </Link>
+                    )}
 
-                                    {isProfileOpen&&(
-                                        <div
-                                    onMouseEnter={()=> setIsProfileOpen(true)}
-                                    onMouseLeave={()=> setIsProfileOpen(false)}
-                                    className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg p-2 border border-gray-100"
-                                        >
-                                            <Link to={"/Mybookings"} className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transitions-colors">
-                                            <CalendarDays size={18} className="mr-3"/>
-                                            My Bookings
-                                            </Link>
-                                            <Link to={"/MyOrders"} className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transitions-colors">
-                                            <Package size={18} className="mr-3"/>
-                                            My Orders
-                                            </Link>
-                                            <button onClick={() => {
-                                                        setUser(false);
-                                                        setIsProfileOpen(false);
-                                                    }}
-                                                    className="flex items-center w-full px-4 py-2 text-red-600 hover:bg-red-50"
-                                                >
-                                                    <LogOut size={18} className="mr-3" />
-                                                    Logout
-                                                </button>
-                                        </div>
-                                    )}
-                                </div>
-                            ):(
-                                <button onClick={() => navigate("/Login")}
-                                className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-700 transition-colors font-medium cursor-pointer"
-                                >Login</button>
-                            )
-                        }
+                    {user && (
+                        <button onClick={handleLogout}>Logout</button>
+                    )}
                 </div>
-            )
-            }
-        </div>
-    </nav>
+            )}
+        </nav>
     );
 };
 
